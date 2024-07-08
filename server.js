@@ -1,16 +1,7 @@
-import http from "http";
+import app from "./src/app.js";
 
-const routes = {
-  "/": "Mensagem que trafega na rota raiz",
-  "/books": "Mensagem que trafega na rota books",
-  "/authors": "Mensagem que trafega na rota authors",
-};
+const PORT = 3000;
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end(routes[req.url]);
-});
-
-server.listen(3000, () => {
+app.listen(PORT, () => {
   console.log("Servidor escutando...");
 });
