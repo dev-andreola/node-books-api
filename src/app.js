@@ -1,9 +1,6 @@
 import express from "express";
 import dbConnect from "./config/dbConnect.js";
-import book from "./models/Book.js";
-
-const app = express();
-app.use(express.json());
+import routes from "./routes/index.js";
 
 const dbConnection = await dbConnect();
 
@@ -15,14 +12,8 @@ dbConnection.once("open", () => {
   console.log("Conectado ao Banco de Dados!");
 });
 
-app.get("/", (req, res) => {
-  res.status(200).send("Mensagem que trafega na rota raiz");
-});
-
-app.post("/books", (req, res) => {
-  books.push(req.body);
-  res.status(200).send("Livro adicionado com sucesso!");
-});
+const app = express();
+routes(app);
 
 app.get("/book/:id", (req, res) => {
   const i = getBookByID(req.params.id);
