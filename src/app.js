@@ -56,4 +56,14 @@ app.put("/book/:id", (req, res) => {
   }
 });
 
+app.delete("/book/:id", (req, res) => {
+  const i = getBookByID(req.params.id);
+  if (i === -1) {
+    res.status(404).send("Livro não encontrado!");
+  } else {
+    books.splice(i, 1);
+    res.status(200).send("Livro apagado com sucesso!");
+  }
+});
+
 export default app;
