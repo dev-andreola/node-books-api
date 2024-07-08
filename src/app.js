@@ -18,7 +18,7 @@ const books = [
   },
 ];
 
-function getBooksByID(id) {
+function getBookByID(id) {
   return books.findIndex((book) => {
     return book.id === Number(id);
   });
@@ -38,11 +38,21 @@ app.post("/books", (req, res) => {
 });
 
 app.get("/book/:id", (req, res) => {
-  const i = getBooksByID(req.params.id);
+  const i = getBookByID(req.params.id);
   if (i === -1) {
     res.status(404).send("Livro não encontrado!");
   } else {
     res.status(200).json(books[i]);
+  }
+});
+
+app.put("/book/:id", (req, res) => {
+  const i = getBookByID(req.params.id);
+  if (i == -1) {
+    res.status(404).send("Livro não encontrado!");
+  } else {
+    books[i].title = req.body.title;
+    res.status(200).send("Livro alterado com sucesso!");
   }
 });
 
