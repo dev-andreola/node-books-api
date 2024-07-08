@@ -1,7 +1,18 @@
 import express from "express";
+import dbConnect from "./config/DBConnect.js";
 
 const app = express();
 app.use(express.json());
+
+const dbConnection = await dbConnect();
+
+dbConnection.on("error", (error) => {
+  console.error("Erro ao conectar com o Banco de Dados!", error);
+});
+
+dbConnection.once("open", () => {
+  console.log("Conectado ao Banco de Dados!");
+});
 
 const books = [
   {
