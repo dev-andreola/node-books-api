@@ -19,11 +19,6 @@ app.get("/", (req, res) => {
   res.status(200).send("Mensagem que trafega na rota raiz");
 });
 
-app.get("/books", async (req, res) => {
-  const bookList = await book.find();
-  res.status(200).json(bookList);
-});
-
 app.post("/books", (req, res) => {
   books.push(req.body);
   res.status(200).send("Livro adicionado com sucesso!");
