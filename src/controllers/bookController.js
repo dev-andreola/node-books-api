@@ -2,8 +2,14 @@ import Book from "../models/Book.js";
 
 class BookController {
   static async getBooks(req, res) {
-    const bookList = await Book.find();
-    res.status(200).json(bookList);
+    try {
+      const bookList = await Book.find();
+      res.status(200).json(bookList);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: `${error.message} - Falha na requisição` });
+    }
   }
 
   static async postBook(req, res) {
