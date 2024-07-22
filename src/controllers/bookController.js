@@ -12,6 +12,18 @@ class BookController {
     }
   }
 
+  static async getBookById(req, res) {
+    try {
+      const id = req.params.id;
+      const book = await Book.findById(id);
+      res.status(200).json(book);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: `${error.message} - Falha na requisição` });
+    }
+  }
+
   static async postBook(req, res) {
     try {
       const newBook = await Book.create(req.body);
