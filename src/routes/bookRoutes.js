@@ -7,5 +7,6 @@ routes.get("/books", BookController.getBooks);
 routes.get("/book:id", BookController.getBookById);
 routes.post("/books", BookController.postBook);
 routes.put("/book:id", BookController.putBookById);
+routes.delete("/book:id", BookController.deleteBookById);
 
 export default routes;

@@ -48,6 +48,18 @@ class BookController {
         .json({ message: `${error.message} - Falha ao alterar livro` });
     }
   }
+
+  static async deleteBookById(req, res) {
+    try {
+      const id = req.params.id;
+      await Book.findByIdAndDelete(id);
+      res.status(200).json({ message: "Livro excluído" });
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: `${error.message} - Falha ao deletar livro` });
+    }
+  }
 }
 
 export default BookController;
