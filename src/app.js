@@ -15,25 +15,6 @@ dbConnection.once("open", () => {
 const app = express();
 routes(app);
 
-app.get("/book/:id", (req, res) => {
-  const i = getBookByID(req.params.id);
-  if (i === -1) {
-    res.status(404).send("Livro não encontrado!");
-  } else {
-    res.status(200).json(books[i]);
-  }
-});
-
-app.put("/book/:id", (req, res) => {
-  const i = getBookByID(req.params.id);
-  if (i == -1) {
-    res.status(404).send("Livro não encontrado!");
-  } else {
-    books[i].title = req.body.title;
-    res.status(200).send("Livro alterado com sucesso!");
-  }
-});
-
 app.delete("/book/:id", (req, res) => {
   const i = getBookByID(req.params.id);
   if (i === -1) {
