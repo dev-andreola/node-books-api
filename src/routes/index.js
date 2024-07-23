@@ -1,5 +1,6 @@
 import express from "express";
 import bookRoutes from "./bookRoutes.js";
+import authorRoutes from "./authorRoutes.js";
 
 const routes = (app) => {
   app
@@ -8,7 +9,7 @@ const routes = (app) => {
       res.status(200).send("Mensagem que trafega na rota raiz")
     );
 
-  app.use(express.json(), bookRoutes);
+  app.use(express.json(), bookRoutes, authorRoutes);
 };
 
 export default routes;
