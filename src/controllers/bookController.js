@@ -64,6 +64,20 @@ class BookController {
         .json({ message: `${error.message} - Falha ao deletar livro` });
     }
   }
+
+  static async getBooksByYear(req, res) {
+    const year = req.query.year;
+    try {
+      const booksByYear = await Book.find({
+        year: year,
+      });
+      res.status(200).json(booksByYear);
+    } catch (error) {
+      res
+        .status(500)
+        .json({ message: `${error.message} - Falha ao buscar livros` });
+    }
+  }
 }
 
 export default BookController;
