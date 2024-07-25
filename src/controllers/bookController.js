@@ -1,3 +1,4 @@
+import NotFound from "../errors/NotFound.js";
 import book from "../models/Book.js";
 
 class BookController {
@@ -21,9 +22,14 @@ class BookController {
       // essa variável recebe o objeto de modelo livro encontrado pelo id
       const bookFound = await book.findById(id);
 
-      // respondendo com o objeto do livro encontrado em forma de json
-      // 200 OK - HTTP response status code
-      res.status(200).json(bookFound);
+      if (bookFound !== null) {
+        // respondendo com o objeto do livro encontrado em forma de json
+        // 200 OK - HTTP response status code
+        res.status(200).json(bookFound);
+      } else {
+        // respondendo com o erro criado passando uma mensagem personalizada
+        next(new NotFound("ID do livro não encontrado!"));
+      }
     } catch (error) {
       next(error);
     }

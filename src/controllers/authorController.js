@@ -1,3 +1,4 @@
+import NotFound from "../errors/NotFound.js";
 import author from "../models/Author.js";
 
 class AuthorController {
@@ -33,9 +34,8 @@ class AuthorController {
         // 200 OK - HTTP response status code
         res.status(200).json(authorFound);
       } else {
-        // respondendo com um objeto passando a message de erro
-        // 400 Not Found - HTTP response status code
-        res.status(404).json({ message: "ID do autor não encontrado!" });
+        // respondendo com o erro criado passando uma mensagem personalizada
+        next(new NotFound("ID do autor não encontrado!"));
       }
     } catch (error) {
       next(error);

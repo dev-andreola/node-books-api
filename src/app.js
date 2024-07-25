@@ -2,6 +2,7 @@ import db from "./config/dbConnect.js";
 import express from "express";
 import routes from "./routes/index.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import Handle404 from "./middlewares/Handle404.js";
 
 db.on("error", console.log.bind(console, "Erro de conexão!"));
 db.once("open", () => {
@@ -14,6 +15,8 @@ const app = express();
 app.use(express.json());
 
 routes(app);
+
+app.use(Handle404);
 
 // middleware criado para tratar os erros
 app.use(errorHandler);
