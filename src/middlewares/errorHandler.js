@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import BaseError from "../errors/BaseError.js";
+import InvalidReq from "../errors/InvalidReq.js";
+import ValidationError from "../errors/ValidationError.js";
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(error, req, res, next) {
@@ -8,25 +11,19 @@ function errorHandler(error, req, res, next) {
   if (error instanceof mongoose.Error.CastError) {
     // respondendo com um objeto passando a message de erro
     // 400 Bad Request - HTTP response status code
-    res.status(400).json({ message: "ID inválido!" });
+    new InvalidReq().sendResponse(res);
   }
   // se os dados passados no corpo da requisição não forem validos
   // o mongoose lança um Validation Error (erro de validação)
   // por exemplo quando não encontrar propriedades obrigatórias (required)
   else if (error instanceof mongoose.Error.ValidationError) {
-    const errorMessages = Object.values(error.errors)
-      .map((error) => error.message)
-      .join("; ");
-
     // respondendo com um objeto passando a message de erro
     // 400 Bad Request - HTTP response status code
-    res.status(400).json({
-      message: `Os seguintes erros foram encontrados: ${errorMessages}`,
-    });
+    new ValidationError(error).sendResponse(res);
   } else {
     // respondendo com um objeto passando a message de erro
     // 500 Internal Server Error - HTTP response status code
-    res.status(500).json({ message: `Erro interno de servidor!` });
+    new BaseError().sendResponse(res);
   }
 }
 
