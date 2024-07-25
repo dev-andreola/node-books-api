@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import author from "../models/Author.js";
 
 class AuthorController {
@@ -23,17 +24,26 @@ class AuthorController {
     const id = req.params.id;
     try {
       // essa variável recebe o objeto de modelo author encontrado pelo id
+      // se não for encontrado retornará null
       const authorFound = await author.findById(id);
 
-      // respondendo com o objeto do autor encontrado em forma de json
-      // 200 OK - HTTP response status code
-      res.status(200).json(authorFound);
+      if (authorFound !== null) {
+        // respondendo com o objeto do autor encontrado em forma de json
+        // 200 OK - HTTP response status code
+        res.status(200).json(authorFound);
+      } else {
+        // respondendo com um objeto passando a message de erro
+        // 400 Not Found - HTTP response status code
+        res.status(404).json({ message: "ID do autor não encontrado!" });
+      }
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 500 Internal Server Error - HTTP response status code
-      res
-        .status(500)
-        .json({ message: `${error.message} - ID do autor não encontrado!` });
+      if (error instanceof mongoose.Error.CastError) {
+        res.status(400).json({ message: "ID do autor inválido!" });
+      } else {
+        // respondendo com um objeto passando a message de erro
+        // 500 Internal Server Error - HTTP response status code
+        res.status(500).json({ message: `Erro interno de servidor!` });
+      }
     }
   };
 
