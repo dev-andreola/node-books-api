@@ -1,17 +1,25 @@
 import mongoose from "mongoose";
-import { authorSchema } from "./Author.js";
 
+// essa variável recebe o schema de um livro
 const bookSchema = new mongoose.Schema(
   {
     id: { type: mongoose.Schema.Types.ObjectId },
     title: { type: String, required: true },
-    year: { type: Number },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "author",
+      required: true,
+    },
+    publisher: { type: String, required: true },
     pages: { type: Number },
-    author: authorSchema,
   },
-  { versionKey: false }
+  {
+    // especifico do mongodb, se trata de controle de versão
+    versionKey: false,
+  }
 );
 
-const book = mongoose.model("books", bookSchema);
+// essa variável recebe o model criado utilizando o schema
+const book = mongoose.model("book", bookSchema);
 
 export default book;

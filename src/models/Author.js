@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// essa variável recebe o schema de um autor
 const authorSchema = new mongoose.Schema(
   {
     id: { type: mongoose.Schema.Types.ObjectId },
@@ -7,10 +8,12 @@ const authorSchema = new mongoose.Schema(
     nationality: { type: String },
   },
   {
+    // especifico do mongodb, se trata de controle de versão
     versionKey: false,
   }
 );
 
-const author = mongoose.model("authors", authorSchema);
+// essa variável recebe o model criado utilizando o schema
+const author = mongoose.model("author", authorSchema);
 
-export { author, authorSchema };
+export default author;

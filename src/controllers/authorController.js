@@ -1,65 +1,101 @@
-import { author } from "../models/Author.js";
+import author from "../models/Author.js";
 
 class AuthorController {
-  static async getAuthors(req, res) {
+  static getAuthors = async (req, res) => {
     try {
-      const authorList = await author.find();
-      res.status(200).json(authorList);
+      // essa variável recebe todos os objetos do modelo author encontrados no banco de dados
+      const authorsFound = await author.find();
+
+      // respondendo com os objetos de autor encontrados em forma de json
+      // 200 OK - HTTP response status code
+      res.status(200).json(authorsFound);
     } catch (error) {
+      // respondendo com um objeto passando a message
+      // 500 Internal Server Error - HTTP response status code
       res
         .status(500)
-        .json({ message: `${error.message} - Falha na requisição` });
+        .json({ message: `${error.message} - Erro interno do servidor!` });
     }
-  }
+  };
 
-  static async getAuthorById(req, res) {
+  static getAuthorById = async (req, res) => {
+    // essa variável recebe o id passado como parâmetro na url da rota de requisição
+    const id = req.params.id;
     try {
-      const id = req.params.id;
-      const author = await author.findById(id);
-      res.status(200).json(author);
+      // essa variável recebe o objeto de modelo author encontrado pelo id
+      const authorFound = await author.findById(id);
+
+      // respondendo com o objeto do autor encontrado em forma de json
+      // 200 OK - HTTP response status code
+      res.status(200).json(authorFound);
     } catch (error) {
+      // respondendo com um objeto passando a message
+      // 500 Internal Server Error - HTTP response status code
       res
         .status(500)
-        .json({ message: `${error.message} - Falha na requisição` });
+        .json({ message: `${error.message} - ID do autor não encontrado!` });
     }
-  }
+  };
 
-  static async postAuthor(req, res) {
+  static postAuthor = async (req, res) => {
     try {
-      const newAuthor = await author.create(req.body);
-      res
-        .status(201)
-        .json({ message: "Autor criado com sucesso!", author: newAuthor });
-    } catch (error) {
-      res.status(500).json({
-        message: `${error.message} - Falha ao cadastrar autor!`,
-      });
-    }
-  }
+      // essa variável recebe o objeto passado no corpo da requisição
+      const newAuthor = new author(req.body);
 
-  static async putAuthorById(req, res) {
-    try {
-      const id = req.params.id;
-      await author.findByIdAndUpdate(id, req.body);
-      res.status(200).json({ message: "Autor atualizado" });
+      // criando o objeto no banco de dados de forma assíncrona
+      // author model
+      await author.create(newAuthor);
+
+      // respondendo com o objeto do autor criado em forma de json
+      // 201 Created - HTTP response status code
+      res.status(201).json(newAuthor);
     } catch (error) {
+      // respondendo com um objeto passando a message
+      // 500 Internal Server Error - HTTP response status code
       res
         .status(500)
-        .json({ message: `${error.message} - Falha ao alterar autor` });
+        .json({ message: `${error.message} - Falha ao cadastrar autor!` });
     }
-  }
+  };
 
-  static async deleteAuthorById(req, res) {
+  static putAuthor = async (req, res) => {
+    // essa variável recebe o id passado como parâmetro na url da rota de requisição
+    const id = req.params.id;
     try {
-      const id = req.params.id;
+      // atualizando o autor pelo id de forma assíncrona
+      await author.findByIdAndUpdate(id, { $set: req.body });
+
+      // respondendo com um objeto passando a message
+      // 200 OK - HTTP response status code
+      res.status(200).json({ message: "Livro alterado com sucesso!" });
+    } catch (error) {
+      // respondendo com um objeto passando a message
+      // 400 Bad Request - HTTP response status code
+      res
+        .status(500)
+        .json({ message: `${error.message} - Falha ao editar autor!` });
+    }
+  };
+
+  static deleteAuthor = async (req, res) => {
+    // essa variável recebe o id passado como parâmetro na url da rota de requisição
+    const id = req.params.id;
+
+    try {
+      // deletando o autor pelo id de forma assíncrona
       await author.findByIdAndDelete(id);
-      res.status(200).json({ message: "Autor excluído" });
+
+      // respondendo com um objeto passando a message
+      // 200 OK - HTTP response status code
+      res.status(200).json({ message: "Autor deletado com sucesso!" });
     } catch (error) {
+      // respondendo com um objeto passando a message
+      // 400 Bad Request - HTTP response status code
       res
         .status(500)
-        .json({ message: `${error.message} - Falha ao deletar autor` });
+        .json({ message: `${error.message} - Falha ao deletar o livro!` });
     }
-  }
+  };
 }
 
 export default AuthorController;
