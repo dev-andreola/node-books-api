@@ -1,7 +1,7 @@
 import book from "../models/Book.js";
 
 class BookController {
-  static getBooks = async (req, res) => {
+  static getBooks = async (req, res, next) => {
     try {
       // essa variável recebe todos os objetos de modelo livro encontrados no banco de dados
       const booksFound = await book.find();
@@ -10,15 +10,11 @@ class BookController {
       // 200 OK - HTTP response status code
       res.status(200).json(booksFound);
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 500 Internal Server Error - HTTP response status code
-      res
-        .status(500)
-        .json({ message: `${error.message} - Erro interno do servidor!` });
+      next(error);
     }
   };
 
-  static getBookById = async (req, res) => {
+  static getBookById = async (req, res, next) => {
     // essa variável recebe o id passado como parâmetro na url da rota de requisição
     const id = req.params.id;
     try {
@@ -29,15 +25,11 @@ class BookController {
       // 200 OK - HTTP response status code
       res.status(200).json(bookFound);
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 400 Bad Request - HTTP response status code
-      res
-        .status(400)
-        .json({ message: `${error.message} - ID do livro não encontrado!` });
+      next(error);
     }
   };
 
-  static postBook = async (req, res) => {
+  static postBook = async (req, res, next) => {
     try {
       // essa variável recebe o objeto passado no corpo da requisição
       const newBook = new book(req.body);
@@ -50,15 +42,11 @@ class BookController {
       // 201 Created - HTTP response status code
       res.status(201).json(newBook);
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 500 Internal Server Error - HTTP response status code
-      res
-        .status(500)
-        .json({ message: `${error.message} - Falha ao cadastrar livro!` });
+      next(error);
     }
   };
 
-  static putBook = async (req, res) => {
+  static putBook = async (req, res, next) => {
     // essa variável recebe o id passado como parâmetro na url da rota de requisição
     const id = req.params.id;
     try {
@@ -69,15 +57,11 @@ class BookController {
       // 200 OK - HTTP response status code
       res.status(200).json({ message: "Livro atualizado com sucesso!" });
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 400 Bad Request - HTTP response status code
-      res
-        .status(400)
-        .json({ message: `${error.message} - ID do livro não encontrado!` });
+      next(error);
     }
   };
 
-  static deleteBook = async (req, res) => {
+  static deleteBook = async (req, res, next) => {
     // essa variável recebe o id passado como parâmetro na url da rota de requisição
     const id = req.params.id;
 
@@ -89,15 +73,11 @@ class BookController {
       // 200 OK - HTTP response status code
       res.status(200).json({ message: "Livro deletado com sucesso!" });
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 400 Bad Request - HTTP response status code
-      res
-        .status(400)
-        .json({ message: `${error.message} - ID do livro não encontrado!` });
+      next(error);
     }
   };
 
-  static getBooksByPublisher = async (req, res) => {
+  static getBooksByPublisher = async (req, res, next) => {
     try {
       // essa variável recebe o valor digitado na query publisher digitada na url
       const publisher = req.query.publisher;
@@ -108,11 +88,7 @@ class BookController {
 
       res.status(200).json(booksFound);
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 500 Internal Server Error - HTTP response status code
-      res
-        .status(500)
-        .json({ message: `${error.message} - Falha ao cadastrar livro!` });
+      next(error);
     }
   };
 }

@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import author from "../models/Author.js";
 
 class AuthorController {
@@ -19,12 +18,14 @@ class AuthorController {
     }
   };
 
-  static getAuthorById = async (req, res) => {
+  static getAuthorById = async (req, res, next) => {
     // essa variável recebe o id passado como parâmetro na url da rota de requisição
     const id = req.params.id;
     try {
       // essa variável recebe o objeto de modelo author encontrado pelo id
-      // se não for encontrado retornará null
+      // o método findById do Mongoose espera receber um ID do tipo ObjectId
+      // se for passado um id ObjectId mas não encontrado retornará null
+      // se não for passado um id ObjectId o mongoose lançará um Cast Error
       const authorFound = await author.findById(id);
 
       if (authorFound !== null) {
@@ -37,17 +38,11 @@ class AuthorController {
         res.status(404).json({ message: "ID do autor não encontrado!" });
       }
     } catch (error) {
-      if (error instanceof mongoose.Error.CastError) {
-        res.status(400).json({ message: "ID do autor inválido!" });
-      } else {
-        // respondendo com um objeto passando a message de erro
-        // 500 Internal Server Error - HTTP response status code
-        res.status(500).json({ message: `Erro interno de servidor!` });
-      }
+      next(error);
     }
   };
 
-  static postAuthor = async (req, res) => {
+  static postAuthor = async (req, res, next) => {
     try {
       // essa variável recebe o objeto passado no corpo da requisição
       const newAuthor = new author(req.body);
@@ -60,15 +55,11 @@ class AuthorController {
       // 201 Created - HTTP response status code
       res.status(201).json(newAuthor);
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 500 Internal Server Error - HTTP response status code
-      res
-        .status(500)
-        .json({ message: `${error.message} - Falha ao cadastrar autor!` });
+      next(error);
     }
   };
 
-  static putAuthor = async (req, res) => {
+  static putAuthor = async (req, res, next) => {
     // essa variável recebe o id passado como parâmetro na url da rota de requisição
     const id = req.params.id;
     try {
@@ -79,15 +70,11 @@ class AuthorController {
       // 200 OK - HTTP response status code
       res.status(200).json({ message: "Livro alterado com sucesso!" });
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 400 Bad Request - HTTP response status code
-      res
-        .status(500)
-        .json({ message: `${error.message} - Falha ao editar autor!` });
+      next(error);
     }
   };
 
-  static deleteAuthor = async (req, res) => {
+  static deleteAuthor = async (req, res, next) => {
     // essa variável recebe o id passado como parâmetro na url da rota de requisição
     const id = req.params.id;
 
@@ -99,11 +86,7 @@ class AuthorController {
       // 200 OK - HTTP response status code
       res.status(200).json({ message: "Autor deletado com sucesso!" });
     } catch (error) {
-      // respondendo com um objeto passando a message
-      // 400 Bad Request - HTTP response status code
-      res
-        .status(500)
-        .json({ message: `${error.message} - Falha ao deletar o livro!` });
+      next(error);
     }
   };
 }
