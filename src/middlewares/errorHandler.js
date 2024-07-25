@@ -9,6 +9,20 @@ function errorHandler(error, req, res, next) {
     // respondendo com um objeto passando a message de erro
     // 400 Bad Request - HTTP response status code
     res.status(400).json({ message: "ID inválido!" });
+  }
+  // se os dados passados no corpo da requisição não forem validos
+  // o mongoose lança um Validation Error (erro de validação)
+  // por exemplo quando não encontrar propriedades obrigatórias (required)
+  else if (error instanceof mongoose.Error.ValidationError) {
+    const errorMessages = Object.values(error.errors)
+      .map((error) => error.message)
+      .join("; ");
+
+    // respondendo com um objeto passando a message de erro
+    // 400 Bad Request - HTTP response status code
+    res.status(400).json({
+      message: `Os seguintes erros foram encontrados: ${errorMessages}`,
+    });
   } else {
     // respondendo com um objeto passando a message de erro
     // 500 Internal Server Error - HTTP response status code

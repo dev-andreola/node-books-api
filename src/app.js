@@ -9,9 +9,13 @@ db.once("open", () => {
 });
 
 const app = express();
+
+// middleware nativo do Express que converte os dados de uma requisição para o formato JSON;
 app.use(express.json());
+
 routes(app);
 
+// middleware criado para tratar os erros
 app.use(errorHandler);
 
 export default app;

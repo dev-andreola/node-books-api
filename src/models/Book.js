@@ -4,13 +4,22 @@ import mongoose from "mongoose";
 const bookSchema = new mongoose.Schema(
   {
     id: { type: mongoose.Schema.Types.ObjectId },
-    title: { type: String, required: true },
+    // campo obrigatório
+    // foi passado uma mensagem personalizada em caso de falta
+    title: {
+      type: String,
+      required: [true, "O título do livro é obrigatório!"],
+    },
+    // campo obrigatório
+    // foi passado uma mensagem personalizada em caso de falta
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "author",
-      required: true,
+      required: [true, "O(a) autor(a) é obrigatório!"],
     },
-    publisher: { type: String, required: true },
+    // campo obrigatório
+    // foi passado uma mensagem personalizada em caso de falta
+    publisher: { type: String, required: [true, "A editora é obrigatória!"] },
     pages: { type: Number },
   },
   {
