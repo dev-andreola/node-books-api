@@ -63,12 +63,18 @@ class AuthorController {
     // essa variável recebe o id passado como parâmetro na url da rota de requisição
     const id = req.params.id;
     try {
-      // atualizando o autor pelo id de forma assíncrona
-      await author.findByIdAndUpdate(id, { $set: req.body });
+      // essa variavel recebe o objeto atualizando o autor pelo id de forma assíncrona
+      const authorFound = await author.findByIdAndUpdate(id, {
+        $set: req.body,
+      });
 
-      // respondendo com um objeto passando a message
-      // 200 OK - HTTP response status code
-      res.status(200).json({ message: "Livro alterado com sucesso!" });
+      if (authorFound !== null) {
+        // respondendo com um objeto passando a message
+        // 200 OK - HTTP response status code
+        res.status(200).json({ message: "Autor alterado com sucesso!" });
+      } else {
+        next(new NotFound("ID do autor não encontrado!"));
+      }
     } catch (error) {
       next(error);
     }
@@ -80,11 +86,15 @@ class AuthorController {
 
     try {
       // deletando o autor pelo id de forma assíncrona
-      await author.findByIdAndDelete(id);
+      const authorFound = await author.findByIdAndDelete(id);
 
-      // respondendo com um objeto passando a message
-      // 200 OK - HTTP response status code
-      res.status(200).json({ message: "Autor deletado com sucesso!" });
+      if (authorFound !== null) {
+        // respondendo com um objeto passando a message
+        // 200 OK - HTTP response status code
+        res.status(200).json({ message: "Autor deletado com sucesso!" });
+      } else {
+        next(new NotFound("ID do autor não encontrado! "));
+      }
     } catch (error) {
       next(error);
     }

@@ -57,11 +57,15 @@ class BookController {
     const id = req.params.id;
     try {
       // atualizando o livro pelo id de forma assíncrona
-      await book.findByIdAndUpdate(id, { $set: req.body });
+      const bookFound = await book.findByIdAndUpdate(id, { $set: req.body });
 
-      // respondendo com um objeto passando a message
-      // 200 OK - HTTP response status code
-      res.status(200).json({ message: "Livro atualizado com sucesso!" });
+      if (bookFound !== null) {
+        // respondendo com um objeto passando a message
+        // 200 OK - HTTP response status code
+        res.status(200).json({ message: "Livro atualizado com sucesso!" });
+      } else {
+        next(new NotFound("ID do livro não encontrado!"));
+      }
     } catch (error) {
       next(error);
     }
@@ -73,11 +77,15 @@ class BookController {
 
     try {
       // deletando o livro pelo id de forma assíncrona
-      await book.findByIdAndDelete(id);
+      const bookFound = await book.findByIdAndDelete(id);
 
-      // respondendo com um objeto passando a message
-      // 200 OK - HTTP response status code
-      res.status(200).json({ message: "Livro deletado com sucesso!" });
+      if (bookFound !== null) {
+        // respondendo com um objeto passando a message
+        // 200 OK - HTTP response status code
+        res.status(200).json({ message: "Livro deletado com sucesso!" });
+      } else {
+        next(new NotFound("ID do livro não encontrado!"));
+      }
     } catch (error) {
       next(error);
     }
