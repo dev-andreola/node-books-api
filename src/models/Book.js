@@ -19,8 +19,19 @@ const bookSchema = new mongoose.Schema(
     },
     // campo obrigatório
     // foi passado uma mensagem personalizada em caso de falta
-    publisher: { type: String, required: [true, "A editora é obrigatória!"] },
-    pages: { type: Number },
+    publisher: {
+      type: String,
+      required: [true, "A editora é obrigatória!"],
+      enum: {
+        values: ["Lvm", "Nee", "etanasia"],
+        message: "A editora {VALUE} não está cadastrada!",
+      },
+    },
+    pages: {
+      type: Number,
+      min: [10, "O número de páginas deve ser maior que 10"],
+      max: [5000, "O número de páginas deve ser menor que 5000"],
+    },
   },
   {
     // especifico do mongodb, se trata de controle de versão
