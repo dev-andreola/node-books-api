@@ -93,13 +93,7 @@ class BookController {
 
   static getBooksByFilter = async (req, res, next) => {
     try {
-      // essa variável recebe o valor digitado na query publisher digitada na url
-      const { publisher, title } = req.query;
-
-      const search = {};
-
-      if (publisher) search.publisher = publisher;
-      if (title) search.title = { $regex: title, $options: "i" };
+      const search = handleSearch(req.query);
 
       // essa variável recebe todos os objetos de livro encontrados no banco de dados
       // todos os objetos onde o valor publisher é igual ao recebido na query
@@ -110,6 +104,23 @@ class BookController {
       next(error);
     }
   };
+}
+
+function handleSearch(params) {
+  // essa variável recebe o valor digitado na query publisher digitada na url
+  const { publisher, title, minPages, maxPages } = params;
+
+  const search = {};
+
+  if (publisher) search.publisher = { $regex: publisher, $options: "i" };
+  if (title) search.title = { $regex: title, $options: "i" };
+
+  if (minPages || maxPages) search.pages = {};
+
+  if (minPages) search.pages.$gte = minPages;
+  if (maxPages) search.pages.$lte = maxPages;
+
+  return search;
 }
 
 export default BookController;
