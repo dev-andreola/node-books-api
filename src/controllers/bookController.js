@@ -95,10 +95,14 @@ class BookController {
     try {
       const search = await handleSearch(req.query);
 
-      // essa variável recebe todos os objetos de livro encontrados no banco de dados
-      const booksFound = await book.find(search).populate("author");
+      if (search !== null) {
+        // essa variável recebe todos os objetos de livro encontrados no banco de dados
+        const booksFound = await book.find(search).populate("author");
 
-      res.status(200).json(booksFound);
+        res.status(200).json(booksFound);
+      } else {
+        res.status(200).send([]);
+      }
     } catch (error) {
       next(error);
     }
@@ -109,7 +113,7 @@ async function handleSearch(params) {
   // essa variável recebe o valor digitado na query publisher digitada na url
   const { publisher, title, minPages, maxPages, authorName } = params;
 
-  const search = {};
+  let search = {};
 
   if (publisher) search.publisher = { $regex: publisher, $options: "i" };
   if (title) search.title = { $regex: title, $options: "i" };
@@ -120,13 +124,15 @@ async function handleSearch(params) {
   if (maxPages) search.pages.$lte = maxPages;
 
   if (authorName) {
-    try {
-      const authorFound = await author.findOne({
-        name: { $regex: authorName, $options: "i" },
-      });
+    const authorFound = await author.findOne({
+      name: { $regex: authorName, $options: "i" },
+    });
 
+    if (authorFound !== null) {
       search.author = authorFound._id;
-    } catch {}
+    } else {
+      search = null;
+    }
   }
 
   return search;
