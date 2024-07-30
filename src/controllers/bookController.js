@@ -99,7 +99,7 @@ class BookController {
       const search = {};
 
       if (publisher) search.publisher = publisher;
-      if (title) search.title = title;
+      if (title) search.title = { $regex: title, $options: "i" };
 
       // essa variável recebe todos os objetos de livro encontrados no banco de dados
       // todos os objetos onde o valor publisher é igual ao recebido na query
