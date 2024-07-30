@@ -1,5 +1,5 @@
 import NotFound from "../errors/NotFound.js";
-import { book } from "../models/index.js";
+import { author, book } from "../models/index.js";
 
 class BookController {
   static getBooks = async (req, res, next) => {
@@ -93,11 +93,10 @@ class BookController {
 
   static getBooksByFilter = async (req, res, next) => {
     try {
-      const search = handleSearch(req.query);
+      const search = await handleSearch(req.query);
 
       // essa variável recebe todos os objetos de livro encontrados no banco de dados
-      // todos os objetos onde o valor publisher é igual ao recebido na query
-      const booksFound = await book.find(search);
+      const booksFound = await book.find(search).populate("author");
 
       res.status(200).json(booksFound);
     } catch (error) {
@@ -106,9 +105,9 @@ class BookController {
   };
 }
 
-function handleSearch(params) {
+async function handleSearch(params) {
   // essa variável recebe o valor digitado na query publisher digitada na url
-  const { publisher, title, minPages, maxPages } = params;
+  const { publisher, title, minPages, maxPages, authorName } = params;
 
   const search = {};
 
@@ -119,6 +118,16 @@ function handleSearch(params) {
 
   if (minPages) search.pages.$gte = minPages;
   if (maxPages) search.pages.$lte = maxPages;
+
+  if (authorName) {
+    try {
+      const authorFound = await author.findOne({
+        name: { $regex: authorName, $options: "i" },
+      });
+
+      search.author = authorFound._id;
+    } catch {}
+  }
 
   return search;
 }
