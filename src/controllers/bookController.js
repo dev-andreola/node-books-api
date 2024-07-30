@@ -91,14 +91,19 @@ class BookController {
     }
   };
 
-  static getBooksByPublisher = async (req, res, next) => {
+  static getBooksByFilter = async (req, res, next) => {
     try {
       // essa variável recebe o valor digitado na query publisher digitada na url
-      const publisher = req.query.publisher;
+      const { publisher, title } = req.query;
+
+      const search = {};
+
+      if (publisher) search.publisher = publisher;
+      if (title) search.title = title;
 
       // essa variável recebe todos os objetos de livro encontrados no banco de dados
       // todos os objetos onde o valor publisher é igual ao recebido na query
-      const booksFound = await book.find({ publisher: publisher });
+      const booksFound = await book.find(search);
 
       res.status(200).json(booksFound);
     } catch (error) {

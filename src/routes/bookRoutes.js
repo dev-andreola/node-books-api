@@ -5,7 +5,7 @@ const router = express.Router();
 
 router
   .get("/books", BookController.getBooks)
-  .get("/books/search", BookController.getBooksByPublisher)
+  .get("/books/search", BookController.getBooksByFilter)
   .get("/books/:id", BookController.getBookById)
   .post("/books", BookController.postBook)
   .put("/books/:id", BookController.putBook)
