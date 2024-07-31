@@ -1,15 +1,30 @@
 import NotFound from "../errors/NotFound.js";
 import { author, book } from "../models/index.js";
+import InvalidReq from "../errors/InvalidReq.js";
 
 class BookController {
   static getBooks = async (req, res, next) => {
     try {
-      // essa variável recebe todos os objetos de modelo livro encontrados no banco de dados
-      const booksFound = await book.find();
+      let { limit = 5, page = 1 } = req.query;
 
-      // respondendo com os objetos de livro encontrados em forma de json
-      // 200 OK - HTTP response status code
-      res.status(200).json(booksFound);
+      limit = parseInt(limit);
+      page = parseInt(page);
+
+      if (limit > 0 && page > 0) {
+        // essa variável recebe todos os objetos de modelo livro encontrados no banco de dados
+        const booksFound = await book
+          .find()
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .populate("author")
+          .exec();
+
+        // respondendo com os objetos de livro encontrados em forma de json
+        // 200 OK - HTTP response status code
+        res.status(200).json(booksFound);
+      } else {
+        next(new InvalidReq());
+      }
     } catch (error) {
       next(error);
     }

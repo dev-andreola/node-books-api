@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import BaseError from "../errors/BaseError.js";
 import InvalidReq from "../errors/InvalidReq.js";
 import ValidationError from "../errors/ValidationError.js";
-import NotFound from "../errors/NotFound.js";
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(error, req, res, next) {
@@ -23,7 +22,7 @@ function errorHandler(error, req, res, next) {
     new ValidationError(error).sendResponse(res);
   }
   // se o erro for uma instância da classe criada
-  else if (error instanceof NotFound) {
+  else if (error instanceof BaseError) {
     // respondendo com um objeto passando a mensagem de erro e o status
     // 404 Not Found - HTTP response status code
     error.sendResponse(res);
