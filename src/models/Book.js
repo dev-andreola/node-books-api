@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import autopopulate from "mongoose-autopopulate";
 
 // essa variável recebe o schema de um livro
 const bookSchema = new mongoose.Schema(
@@ -16,6 +17,7 @@ const bookSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "author",
       required: [true, "O(a) autor(a) é obrigatório!"],
+      autopopulate: true,
     },
     // campo obrigatório
     // foi passado uma mensagem personalizada em caso de falta
@@ -42,6 +44,8 @@ const bookSchema = new mongoose.Schema(
     versionKey: false,
   }
 );
+
+bookSchema.plugin(autopopulate);
 
 // essa variável recebe o model criado utilizando o schema
 const book = mongoose.model("book", bookSchema);

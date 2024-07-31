@@ -96,7 +96,7 @@ class BookController {
 
       if (search !== null) {
         // essa variável recebe todos os objetos de livro encontrados no banco de dados
-        const booksFound = book.find(search).populate("author");
+        const booksFound = book.find(search);
 
         req.result = booksFound;
 
